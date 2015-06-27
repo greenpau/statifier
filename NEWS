@@ -1,0 +1,134 @@
+1.7.3  14-Apr-2013
+   fixed '_dl_auxv not found' error for glibc 2.16
+
+1.7.2  13-Aug-2012
+   fixed compilation for i386 with gcc 4.6.0 (remove all .cfi directives)
+   dependencies on fileutils, textutils and sh-utils replaced to coreutils
+ 
+1.7.1   2-Mar-2010
+   fixed bug sometimes preventing statifier from working on 32-bit systems
+   (Slackware 13, for example) - strtoul problem
+
+1.7.0  24-Feb-2010
+   statifier not depend on gdb anymore
+   dropped support for alpha
+
+1.6.15  1-Dec-2008
+   added support for Slackware 12.0
+
+1.6.14 17-Aug-2008
+   added support for gdb6.8
+
+1.6.13 16-Oct-2007
+   added support for gdb6.6
+   added support for systems where vDSO not looks like shared library.
+
+1.6.12 10-Sep-2007
+   fixed bug, sometimes preventing statifier from working on systems with
+   prelinked ld-linux - fixed again (I hope, finally :)
+
+1.6.11  9-Jul-2007
+   fixed bug, sometimes preventing statifier from working on systems with
+   prelinked ld-linux
+
+1.6.10 17-Apr-2007
+   fixed bug, preventing build of rpm package on FC5 - thanks to Eric Gerbier
+
+1.6.9  11-Apr-2007
+   fix for [vdso], [heap], [stack] in the /proc/PID/maps
+   wrongly reported by some kernels (for example on FC5) 'rwx' permissions
+   replaced by 'rw-'
+   support for 'sysenter' instruction in the VDSO on the i386 platform.
+
+1.6.8  30-Mar-2006
+   statifier able work with gdb-6.4
+
+1.6.7  30-Sep-2005
+   fixed compilation for gcc-4.
+   fixed statifying problem for kernel 2.6.12 (FC4, SuSE 9.3 (?), etc)
+   NOTE: at least on FC4 (kernel 2.6.12) statified exe segfault, unless
+   it was created as:
+   LD_ASSUME_KERNEL=2.4.19 statifier ...
+
+1.6.6   9-May-2005
+   Now executable statified on the system with one kernel has
+   much better chance to run on the system with another kernel.
+
+1.6.5   7-Apr-2005
+   Fixed segfault in the statified executables on system where
+   loader's PT_LOAD segment has vaddr != 0 and loader have no
+   symbol table.
+   Fixed race condition: gdb_runner/gdb, which sometimes prevent
+   statifier from working.
+   Statifier now no more use readelf
+
+1.6.4
+   nasty bug in the 1.6.3 distribution fixed - gdb_ruuner.gdb
+   file was incorrect. So unless you use 1.6.3 from CVS
+   it simple does not work.
+
+1.6.3
+   support for kernel 2.6 (with thread local storage) on x86_64
+
+1.6.2
+   statifier now work with loader ld-2.3.3
+   Innovation in this loader, which affect statifier are:
+      (possible) splitting stack to two segments (rw and rwx)
+      GNU_RELRO segment - after data written to segment it's 
+      permission changed to read-only
+
+1.6.1
+   statifier work on RHEL3.2
+
+1.6.0
+   statifier was adopted to work with RHEL 3 and 3.1
+   all phrdrs (except PT_INTERP and PT_PHDR) are copied to the
+   statified file, so it's preserve, for example PT_GNU_STACK,
+   which used by exec-shield.
+   Statifying now should be possible on the systems with exec-shield
+   and randomization enabled. 
+   Code now assume nothing about memory layout, so porting
+   will be easier.
+
+1.5.0
+   Statifying now possible on system with stripped loader.
+   Statified exe now more friendly to gdb, readelf, objdump, etc.
+
+1.4.0
+   Porting to alpha.
+   Some more documentation.
+
+1.3.1
+   Added documentation.
+   Some underground work for future porting
+
+1.3.0
+   Now it's really work for linux kernel >= 2.5
+   Added options --set and --unset, which allow set / unset environment
+   for statified program without affecting statifier itself.
+   Added options --verbose and --keep-working-directory for debugging purpose. 
+   Work with non-gnu awk too (as in debian) 
+   Suppressed gdb's (>= 6.0) message: rtld.c: No such file or directory
+
+1.2.1
+   Added support for linux kernel >= 2.5
+   Big internal changes.
+   
+1.2.0
+   Added support for amd64 (x86_64) processor
+   Added examples to man page
+
+1.1.1
+   Added missing path to set_threa_area_addr
+   Fixed segfault in the statified executables which used
+   function dlsym, and dlsym can't find symbol.
+   But now statifier more depend on symbols to be found in the interpreter.
+   (SuSE with striped symbols will not work)
+
+1.1.0
+   Added support for TLS - thread local storage.
+   Now statifier work on Linux RH9 too.
+
+1.0.0
+   First public release. 
+   Tested on linux x86

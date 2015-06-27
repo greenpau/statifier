@@ -1,0 +1,14 @@
+Compilation:
+	make all
+
+Install:
+	make install 
+
+Create rpm (and tar file):
+	make rpmbuild
+
+or, if rpmbuild functionality is yet in rpm
+	make rpm
+
+Create distribution tar file:
+	make tar

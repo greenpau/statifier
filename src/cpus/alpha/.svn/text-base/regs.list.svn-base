@@ -1,0 +1,46 @@
+# Copyright (C) 2004, 2005 Valery Reznic
+# This file is part of the Elf Statifier project
+# 
+# This project is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License.
+# See LICENSE file in the doc directory.
+
+# Register list for alpha processor
+
+# Order was taken from struct user_reg_struct
+# (file /usr/include/sys/user.h)
+# But order really does not matter.
+
+v0
+t0
+t1
+t2
+t3
+t4
+t5
+t6
+t7
+s0
+s1
+s2
+s3
+s4
+s5
+fp
+a3
+a4
+a5
+t8
+t9
+t10
+t11
+ra
+t12
+at
+sp
+ps
+pc
+gp
+a0
+a1
+a2

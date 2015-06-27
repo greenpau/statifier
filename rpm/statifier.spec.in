@@ -1,0 +1,61 @@
+Name:          statifier
+Version:       %{my_version}
+Release:       %{my_release}
+License:       GPL
+Group:         Development/Tools
+Summary:       Convert elf dynamic linked exe to "pseudo-static"
+Packager:      Valery Reznic <valery_reznic@users.sourceforge.net>
+Source:	       %{name}-%{version}.tar.gz
+Url:           http://%{name}.sourceforge.net	
+
+ExclusiveOs:   Linux
+
+ExclusiveArch: %{ix86}
+ExclusiveArch: x86_64
+
+Requires:      coreutils
+Requires:      gawk
+
+BuildRoot:     %{_builddir}/%{buildsubdir}-install-root
+
+%ifarch %{ix86}
+   %define has_elf_32 1
+   %define has_elf_64 0
+%endif
+
+%ifarch x86_64
+   %define has_elf_32 1
+   %define has_elf_64 1
+%endif
+
+%ifarch alpha
+   %define has_elf_32 0
+   %define has_elf_64 1
+%endif
+
+%description
+Statifier create from dynamically linked ELF executable
+and all it's libraries (and all LD_PRELOAD libraries if any)
+one file. This file can be copied and run on another machine
+without need to drag all it's libraries.
+
+%prep
+%setup
+
+%build
+make all
+
+%install
+if [ "$RPM_BUILD_ROOT" != "/" ]; then
+   rm -rf "$RPM_BUILD_ROOT"
+else
+   :
+fi
+make install DESTDIR="$RPM_BUILD_ROOT" MANPAGE_SUFFIX=.gz
+
+%clean
+if [ "$RPM_BUILD_ROOT" != "/" ]; then
+   rm -rf "$RPM_BUILD_ROOT"
+else
+   :
+fi

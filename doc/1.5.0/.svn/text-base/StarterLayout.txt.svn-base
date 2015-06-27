@@ -1,0 +1,37 @@
+Starter Layout
+
+Starter segment was designed to be able serve as "first PT_LOAD segment"
+
+Requirement for "first PT_LOAD segment"
+
+- should have ELF header and Phdrs
+- segment size should be multiple of the p_align
+  from the first PT_LOAD segment in original executable.
+
+First requirement is pretty obvious, second one came from
+"Elf specification", which say:
+"Loadable process segments must have congruent values for p_vaddr and
+p_offset, modulo the page size. This member (i.e p_align) gives the value
+to which the segments are aligned in memory and in the file."
+
+Because starter segment may be added before any others, in order to satisfy
+this requirement starter segment size should be multiple of the p_align
+
+Please note, starter segment not always be "first PT_LOAD segment".
+For example, on Alpha stack is immediately under executable, so there is
+no room here for the starter segment. Anyway, I'd like to keep format
+of the starter segment unified for all architectures, so starter segment
+should always fulfill above requirements.
+
+
+So starter segment looks like following.
+
++--------------+---------+--------------+
+|     Ehdr     | N Phdrs | Starter Code |
++--------------+---------+--------------+
+               ^         ^
+e_phnum = N    |         |
+e_phoff -------+         |
+                         |
+e_entry -----------------+
+

@@ -1,0 +1,55 @@
+# to be sourced from bash
+
+# Copyright (C) 2004-2007 Valery Reznic
+# This file is part of the Elf Statifier project
+# 
+# This project is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License.
+# See LICENSE file in the doc directory.
+
+# This file contains variable and functions common for
+# statifier's scripts
+
+function SetVariables
+{
+	[ $# -ne 1 -o "x$1" = "x" ] && {
+		Echo "$0: Usage: SetVariable <work_dir>"
+		return 1
+	}
+	# Temporary Work Directory - WORK_DIR
+	local WORK_DIR=$1
+	# Directory for files to be sourced 
+	# and temp files for use in different stages
+	WORK_COMMON_DIR=$WORK_DIR/common
+
+	LOADER_SYMBOLS=$WORK_COMMON_DIR/ld.syms
+	LOADER_PHDRS=$WORK_COMMON_DIR/ld.phdrs
+
+	OPTION_SRC=$WORK_COMMON_DIR/option.src
+	COMMON_SRC=$WORK_COMMON_DIR/common.src
+	LOADER_SRC=$WORK_COMMON_DIR/loader.src
+
+	# Directoty for adjusted files.
+	WORK_GDB_CMD_DIR=$WORK_DIR/gdb_cmd
+
+	# Directory for segment files
+	WORK_DUMPS_DIR=$WORK_DIR/dumps
+
+	# Directory for misc output from gdb
+	WORK_GDB_OUT_DIR=$WORK_DIR/gdb_out
+	MAPS_FILE="$WORK_GDB_OUT_DIR/maps"
+	INIT_MAPS_FILE="$WORK_GDB_OUT_DIR/init_maps"
+
+	REGISTERS_FILE=$WORK_GDB_OUT_DIR/registers
+	MISC_SRC=$WORK_GDB_OUT_DIR/misc.src
+
+	# Directory for temp files built during new exe file constructions.
+	WORK_OUT_DIR=$WORK_DIR/out
+
+	return 0
+}
+
+function Echo
+{
+	echo "$@" 1>&2
+}

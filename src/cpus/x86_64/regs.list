@@ -1,0 +1,40 @@
+# Copyright (C) 2004, 2005 Valery Reznic
+# This file is part of the Elf Statifier project
+# 
+# This project is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License.
+# See LICENSE file in the doc directory.
+
+# Register list for amd processor (x86_64)
+
+# Order was taken from struct user_reg_struct
+# (file /usr/include/sys/user.h)
+# But order really does not matter.
+
+r15
+r14
+r13
+r12
+rbp
+rbx
+r11
+r10
+r9
+r8
+rax
+rcx
+rdx
+rsi
+rdi
+orig_rax
+rip
+cs
+eflags
+rsp
+ss
+fs_base
+gs_base
+ds
+es
+fs
+gs

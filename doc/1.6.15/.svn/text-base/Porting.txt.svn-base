@@ -1,0 +1,48 @@
+Porting ELF statifier to new CPU
+
+1. Look for 'uname -m' output for the CPU name. 
+   This name will be used later.
+   
+2. You may want convert real CPU name as shown by 'uname -m'
+   to 'canonical name' - for example, different x86 computers
+   can return i386, i486, i586, i686, athlon; and
+   canonical name set to i386.
+   
+   If you need add conversion to the configure script
+   in the 'case "$PROCESSOR"' appropriative line.
+
+   Otherwise, canonical_name = real_name
+
+3. In the file Makefile.common add to the SUPPORTED_CPU_LIST
+   canonical_cpu_name
+
+4. In the directory configs add file config.<canonical_cpu_name> and
+   adjust it as appropriative for your system
+
+5. Create directory cpus/<canonical_cpu_name>
+   This directory should contain following files:
+
+   processor.h         - file which described some processor specific things.
+   thread_local_storage_syscall.h
+                       - file which defined syscall used by loader 
+			 for thread local storage. If there is no support
+			 for thread local storage, file should define
+			 nothing, but still it should exist.
+   regs.list           - list of processor's integer registers
+   clear_trace_bit.gdb - command 'clear_trace_bit' for clear processor's 
+                         trace bit in the status world
+   set_thread_area.gdb - command file for gdb to dump set_thread_area
+                         parameters.
+   syscall.gdb         - should define 'is_it_syscall' - command that check
+                         for syscall instruction(s)
+   dl-var.S            - module for set _dl variables
+   set_thread_area.S   - module for invoke set_thread_area syscall
+   regs.S              - module to restore registers 
+                         and jump to _dl_start_user 
+
+   properties.src      - define different system properties.
+
+6. In the rpm's specfile statifier.spec.in
+   - add ExlusiveArch for new arch
+   - add has_elf_32 and has_elf_64 defines for new arch.
+      

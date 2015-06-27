@@ -1,0 +1,41 @@
+File layout for statified executable.
+
+Offset                                                                 End
+0                                                                      of file
++--------+---------------+---------------+----------+---------+     +--------+
+|        |       |       | Non-allocated | Pad      | PT_LOAD |     | PT_LOAD|
+| Elf    |       |       | sections      | to       | segment |     | segment|
+|        | Phdrs | Shdrs | from          | the      |    1    | ... |   last |
+| Header |       |       | original      | page     |         |     |        |
+|        |       |       | executable    | boundary |         |     |        |
++------------------------+-------+------------------+----------     +--------+
+         ^       ^
+         |       |
+e_phoff -+       |
+                 |
+e_shoff ---------+
+
+
+Program may run just fine without any shdrs, but
+there are a couple of program (include gdb, objdump)
+which not too like ELF files without sections. 
+(At least RH9.0)
+
+I want to make friend with them so I have add Shdrs.
+
+
+Allocated and Non-Allocated sections.
+
+From "ELF specification"
+SHF_ALLOC
+	The sections occupies memory during process executing. Some control
+        sections do not reside in the memory image of an object file; this
+        attribute is off for those sections.
+
+I.e. allocated section should be part of the one of PT_LOAD
+(the only parts of the file loaded into memory) and as part of
+PT_LOAD segment it's already present in the statified executable.
+
+Non-allocated sections (if any) are not part of any PT_LOAD segment
+and they should be copied from original executable.
+

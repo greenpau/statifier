@@ -1,0 +1,8 @@
+Thanks to:
+
+Martin Zwickel (martin dot zwickel at technotrend dot de) for
+his great help and patience with making statifier work on 
+linux 2.6
+
+Stan Tobias (sttob at mailshack dot com) for fixing statifier 
+on Slackware 12.0 (patch fixed impropper strtoul/errno using)

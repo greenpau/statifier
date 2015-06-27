@@ -1,0 +1,71 @@
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete
+END
+loader_base_test.c
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/loader_base_test.c
+END
+dumps.sh
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/dumps.sh
+END
+elf_stripped.c
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/elf_stripped.c
+END
+phdrs.c
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/phdrs.c
+END
+tls_test.c
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/tls_test.c
+END
+split.sh
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/split.sh
+END
+set_thread_area_addr.c
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/set_thread_area_addr.c
+END
+gdb_runner.c
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/gdb_runner.c
+END
+readlink.c
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/readlink.c
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/README
+END
+copy_ehdr.c
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Obsolete/copy_ehdr.c
+END

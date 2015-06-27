@@ -1,0 +1,63 @@
+.TH statifier 1 "@VERSION@" "Valery Reznic" "Elf Statifier"
+.SH NAME
+statifier \- Elf dynamically linked executables statifier
+.SH SYNOPSIS
+.B statifier [OPTION]... <exe_file> <statified_exe> 
+.SH DESCRIPTION
+Statifier make from elf dynamically linked executable and 
+all it's required libraries one stand-alone executable.
+This executable can be copied to another machine without
+any of these shared libraries and run.
+.SH "OPTIONS"
+.LP 
+.TP 
+\fB\-h, \-\-help\fP
+display this help and exit
+.TP 
+\fB\-k, \-\-keep\-working\-directory\fP
+Do not remove working directory.
+Also change it from \fB$TMPDIR/statifier.tmpdir.$$\fP
+to \fB./.statifier\fP
+.TP 
+\fB\-s, \-\-set=VAR=VALUE\fP
+Set environment variable \fBVAR\fP to value \fBVALUE\fP.
+Multiple 'set' options accepted.
+.TP 
+\fB\-u, \-\-unset=VAR\fP
+Unset environment variable \fBVAR\fP.
+Multiple 'unset' options accepted.
+.TP 
+\fB\-v, \-\-verbose\fP
+verbose output
+.TP 
+\fB\-V, \-\-version\fP
+output version and exit
+.SH FILES
+.TP 
+\fB$TMPDIR/statifier.tmpdir.$$\fP
+Directory which contains all temporary files
+.SH ENVIRONMENT VARIABLES
+.LP
+.TP
+\fBTMPDIR\fP
+Directory for temporary files. If not set \fB/tmp/\fP used.
+.SH EXAMPLES
+.TP
+\fBstatifier /bin/df df.static\fP
+Pretty trivial. Convert /bin/df to df.static
+.TP
+\fBstatifier --set=LD_BIND_NOW=yes /bin/df df.static\fP
+Something more interesting. Dynamic linker will resolve all symbols.
+So statifing will take longer, but resulting exe will have faster
+startup.
+.TP
+\fBstatifier --set=LD_PRELOAD=/some/library/to/by/preloaded /bin/df df.static\fP
+Will "link" /bin/df with preloaded library.
+.SH NOTE
+Environment variables are described in the run-time loader's man page.
+.SH LIMITATIONS
+Currently it work only on Linux x86, x86_64 and Alpha
+.SH SEE ALSO
+\fBld.so\fP(8).
+.SH AUTHORS
+Valery Reznic <valery_reznic@users.sourceforge.net>

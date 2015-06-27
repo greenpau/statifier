@@ -1,0 +1,71 @@
+Simplified data flow in statifing process.
+
+dl var tls    regs                                                   Executable
+module module module                                                 ----------
+====== ====== ======                                                     |
+ |      |      |                                                         |
+ |      |      |                                                         |
+ |      |      |                            +----------------------------*---+
+ |      |      |                            |                            |   |
+ |      |      |                            V                            |   |
+ |      |      |                        +--------+                       |   |
+ |      |      |                        | Script |                       |   |
+ |      |      |                        +--------+                       |   |
+ |      |      |                            |                            |   |
+ |      |      |                            | Interpreter                |   |
+ |      |      |                            |                            |   |
+ |      |      |               +------------*-------------+              |   |
+ |      |      |               |                          |              |   |
+ |      |      |               V                          V              |   |
+ |      |      |    +---------------------+   +----------------------+   |   |
+ |      |      |    |        Script       |   | set_thread_area_addr |   |   |
+ |      |      |    +---------------------+   +----------------------+   |   |
+ |      |      |     |           |                  |                    |   |
+ |      |      |     | _dl_vars  | _dl_start_user   | address of         |   |
+ |      |      |     |           |                  | set_thread_area    |   |
+ |      |      |     |           V                  V                    V   |
+ |      |      |     |          +-----------------------------------------+  |
+ |      |      |     |          |                     gdb                 |  |
+ |      |      |     |          +-----------------------------------------+  |
+ |      |      |     |             | tls_data   | registers  | loaded        |
+ |      |      |     |             |            |            | segments      |
+ |      |      |     V             V            V            |               V
+ |      |      |    +---------+   +---------+  +---------+   |   +------------+
+ |      |      |    | strtoul |   | strtoul |  | strtoul |   |   |non_pt_load |
+ |      |      |    +---------+   +---------+  +---------+   |   +------------+
+ |      |      |     | dl_vars     | tls data   | registers  |   non-pt-load |
+ |      |      |     | binary      | binary     | binary     |   part of the |
+ |      |      |     |             |            |            |   executable  |
+ V      V      V     V             V            V            V               V
++-------------------------------------------------+         +-----------------+
+|                create starter                   |         |       cat       |
++-------------------------------------------------+         +-----------------+
+                                |                    statified       |
+                                | starter            executable      |
+                                V                    without starter V
++-----------------------------------------------------------------------------+
+|                        inject_starter                                       |
++-----------------------------------------------------------------------------+
+                                |
+                                V
+                       --------------------
+                       Statified executable
+
+Notes.
+
+Script               - some program (now really script) which from shown input
+                       generate shown output
+
+set_thread_area_addr - a program, which look for 
+                       set_thread_area syscall's address.
+                       This program is part of statifier package.
+
+strtoul              - program which convert string to the internal
+                       'unsigned long' representation.
+                       This program is part of statifier package.
+                       
+create starter       - concatenate all needed modules and their data. 
+
+inject_starter       - inject starter to the executable
+                       ELF file.
+                       This program is part of statifier package.

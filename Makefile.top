@@ -1,0 +1,44 @@
+# Copyright (C) 2004, 2005 Valery Reznic
+# This file is part of the Elf Statifier project
+# 
+# This project is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License.
+# See LICENSE file in the doc directory.
+
+DISTDIR = $(PACKAGE)-$(VERSION)
+TARFILE = $(CURDIR)/$(DISTDIR).tar.gz
+
+FILE_LIST_FOR_TAR = tmp_file_list
+
+dist-list-for-tar:
+	@$(RM)   $(FILE_LIST_FOR_TAR)
+	@$(MAKE) --no-print-directory MY_DIR=$(DISTDIR) dist-list > $(FILE_LIST_FOR_TAR)
+	
+tar:	dist-list-for-tar extra-dist
+	@$(RM)   $(TARFILE)
+	@$(RM)   $(DISTDIR)
+	@$(LN) . $(DISTDIR)
+	GZIP=--best tar --create --dereference --gzip --file $(TARFILE) --files-from=$(FILE_LIST_FOR_TAR)
+	@$(RM)   $(DISTDIR)
+	@$(RM)   $(FILE_LIST_FOR_TAR)
+
+
+TOP_BUILD_DIR = $(CURDIR)
+RPM_BUILD_DIR = $(CURDIR)/TMP_BUILD
+RPM_SPEC_DIR  = $(RPM_BUILD_DIR)
+
+RPM_DEFINES =                             \
+   --define "_sourcedir $(TOP_BUILD_DIR)" \
+   --define "_builddir  $(RPM_BUILD_DIR)" \
+   --define "_specdir   $(RPM_SPEC_DIR)"  \
+   --define "_rpmdir    $(TOP_BUILD_DIR)" \
+   --define "_srcrpmdir $(TOP_BUILD_DIR)" \
+   --define '_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm'
+
+rpm rpmbuild: tar
+	$(RMDIR) $(RPM_BUILD_DIR)
+	$(MKDIR) $(RPM_BUILD_DIR)
+	$@ -ta $(RPM_DEFINES) $(TARFILE)
+	$(RMDIR) $(RPM_BUILD_DIR)
+
+include $(TOP_DIR)/Makefile.common

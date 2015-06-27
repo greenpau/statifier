@@ -1,0 +1,159 @@
+Statifier implementation.
+
+On the top level "statifing" process do following:
+- create starter.
+- save all segments created by loader.
+- create "non-loadable" part of the file 
+  (ehdr, phdrs, shdrs, non-allocated sections)
+- combine non-loadable part and load segments to "statified" executable.
+- "inject" starter.
+
+Note. Before version 1.6.0 starter got loadable segment for itself.
+But someone need to decide what virtual address got this additional segment.
+x86 and alpha (for example) have different memory layouts.
+Worse, there are such thing like exec-shield and randomization, which
+make memory layout different and hardly predictable.
+So, I gave up with this task - find unoccupied virtual address and
+decide use starter injection.
+
+Create starter.
+
+As was said before, starter do following:
+- set loader's variables to the correct values.
+- if loader/kernel use TLS invoke 'set_thread_area' with correct arguments.
+- restore "almost all" registers to the values and jump to _dl_start_user.
+
+Starter have following structure:
+
+module1: /* (dl-var) set loader's variables */
+	module1 code
+        ...
+	jump    next
+module1_data:
+        ...
+next:
+module2: /* (set_thread_area) set_thread_area */
+	module2 code
+	...
+	jump	next
+module2_data:
+	...
+next:
+module3: /* (regs) restore registers  - should be last */
+	module3 code
+	...
+	jump _dl_start_user
+module3_data:
+	...
+
+So, "create starter" process is as simple as following:
+- have prebuilt files with module1, module2 and module3 code
+- somehow create files with module1, module2 and module3 data
+- cat mod1_code mod1_data mod2_code mod2_data mod3_code mod3_data > starter
+  
+I choose this structure for starter for two reason:
+- modules may be easily added/removed as needed at "statifying" time
+- there is no need in compiler/assembler/linker to build starter.
+
+What kind of data we need to create starter ?
+
+Data for dl-var module
+
+dl-var module should set correct values for the following
+variables:
+   argc, argv, envp, auxv, platform, platformlen
+So, their addresses is a data for dl-var modules.
+
+Where can these addresses be found ?
+It's easy: just use command like
+   objdump -t /lib/ld-linux.so.2
+
+Data for set_thread_area module
+
+set_thread_area module needs all data set_thread_are system call needs:
+- entry_number
+- base
+- limit
+- flags
+and one more - set_thread_area's system call number.
+
+Here we have got two questions:
+- is thread local storage in use ?
+- if so, where get set_thread_area's data from ? 
+
+Data for regs module.
+
+It's quite clean that for restoring registers one should have
+registers' values.
+
+What's not so clean, where one can get these values from.
+
+
+Save all segments created by loader.
+
+It's  very simple - just somehow do it.
+
+Create non-loadable part of the file.
+
+Just set up ehdr, phdrs and shrds as needed.
+
+Combine "statified" executable.
+
+It's as simple as 'cat'
+
+"Inject" starter.
+I don't want to look for the unused virtual address, so I need find
+appropriative place in the statified exe and inject starter there.
+
+That's all.
+Yes, that's all, but yet some questions are left unanswered:
+- is thread local storage in use ?
+- if so, where get set_thread_area's data from ? 
+- where got registers' value from ?
+- how save all segments, created by loader.
+- how find the place where starter can be injected ?
+
+Is thread local storage in use ?
+
+The only way I found to detect it is following:
+I wrote two program: tls_test and set_thread_area_addr.
+tls_test do as much as exit(0).
+set_thread_area_addr is a very specialized mini-debugger.
+It's run tls_test under ptrace control and use PTRACE_SYSCALL
+to "step" from one system call to another.
+If set_thread_area_addr detect 'set_thread_area' syscall
+it print syscall's address to stdout, otherwise
+(i.e tls_test exit) nothing printed.
+
+- where get set_thread_area's data from ? 
+- where get registers' value from ?
+- how save all segments, created by loader.
+
+It's possible to play with ptrace in order to get
+all these data, but I preferred an easier way - 
+just use gdb to do all work.
+
+So, "data collection" with gdb looks like following:
+
+- set breakpoint on 'set_thread_area' syscall address (if TLS is in use)
+- set breakpoint on '_dl_start_user' function.
+- run executable to be statified.
+- when hit 'set_thread_area' breakpoint dump %eax (syscall number)
+  and four set_thread_area's arguments, pointed by %ebx
+- continue executing.
+- when hit '_dl_start_user' breakpoint dump registers' values and
+  loaded segments.  
+- kill application and exit.
+
+Please note, that statifying (unlike ldd) never run libraries' init functions.
+
+
+How find the place where starter can be injected ?
+
+As was told before, phdr has field p_filesz, which show how
+much memory really used by this segment. But segments loaded
+into memory as whole pages, so (usually) there is a gap between
+end of segment's data and page boundary.
+So, any segment which has execute permission and gap more than
+starter size is good place for starter injection.
+

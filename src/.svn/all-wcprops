@@ -1,0 +1,251 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src
+END
+set_thread_area.sh
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/set_thread_area.sh
+END
+pt_load_1.c
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/pt_load_1.c
+END
+find_dl_auxv.c
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/find_dl_auxv.c
+END
+elf_find_pattern.c
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/elf_find_pattern.c
+END
+elf_soname.c
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/elf_soname.c
+END
+statifier_parser.src
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier_parser.src
+END
+strtoul.c
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/strtoul.c
+END
+find_dl_argv.c
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/find_dl_argv.c
+END
+unsigned_long_sum.c
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/unsigned_long_sum.c
+END
+my_lib.inc.c
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_lib.inc.c
+END
+asm.make.sh
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/asm.make.sh
+END
+dl-var.c
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/dl-var.c
+END
+regs2asm.make.sh
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/regs2asm.make.sh
+END
+regs.sh
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/regs.sh
+END
+maps.sh
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/maps.sh
+END
+regs2c.make.sh
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/regs2c.make.sh
+END
+regs2awk.make.sh
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/regs2awk.make.sh
+END
+statifier_common.sh
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier_common.sh
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/Makefile
+END
+elf_data.c
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/elf_data.c
+END
+regs.awk
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/regs.awk
+END
+fep.sh
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/fep.sh
+END
+find_dl_platform.c
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/find_dl_platform.c
+END
+statifier_create_exe.sh
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier_create_exe.sh
+END
+statifier_dump.sh
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier_dump.sh
+END
+statifier_loader.sh
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier_loader.sh
+END
+statifier
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier
+END
+statifier_create_starter.sh
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier_create_starter.sh
+END
+fep.c
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/fep.c
+END
+find_dl_main.inc.c
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/find_dl_main.inc.c
+END
+dl-var.inc
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/dl-var.inc
+END
+start.S
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/start.S
+END
+elf_symbols.c
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/elf_symbols.c
+END
+inject_starter.c
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/inject_starter.c
+END
+find_environ.c
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/find_environ.c
+END
+statifier.sh
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier.sh
+END
+statifier_lib.src
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/statifier_lib.src
+END
+end.S
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/end.S
+END
+elf_class.c
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/elf_class.c
+END
+find_dl_argc.c
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/find_dl_argc.c
+END
+non_pt_load.c
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/non_pt_load.c
+END

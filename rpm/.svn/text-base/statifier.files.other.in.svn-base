@@ -1,0 +1,23 @@
+#
+# List of "other files", i.e not per-elf files and not
+# common files for elf
+#
+%dir /usr/lib/statifier
+     /usr/lib/statifier/elf_class
+     /usr/lib/statifier/VERSION
+
+     /usr/bin/statifier
+
+%doc %{_mandir}/man1/statifier.1*
+
+%doc AUTHORS
+%doc ChangeLog
+%doc FAQ
+%doc INSTALL
+%doc LICENSE
+%doc NEWS
+%doc README
+%doc THANKS
+%doc TODO
+
+%doc doc

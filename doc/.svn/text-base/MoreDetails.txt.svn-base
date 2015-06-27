@@ -1,0 +1,198 @@
+More detailed look on statifier.
+
+Statifier's general idea is following:
+- let loader to load/relocate/resolve everything.
+- save "memory snapshot" as statically linked ELF,
+  with Entry address set to correct address.
+- let to kernel load and run "pseudo-static" executable.
+
+1. What's loaded by loader ?
+
+Once again, let us use /bin/ls as example.
+First, find out entry point of /bin/ls:
+	[test]$ readelf -l /bin/ls
+
+Elf file type is EXEC (Executable file)
+Entry point 0x8049590
+There are 6 program headers, starting at offset 52
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  PHDR           0x000034 0x08048034 0x08048034 0x000c0 0x000c0 R E 0x4
+  INTERP         0x0000f4 0x080480f4 0x080480f4 0x00013 0x00013 R   0x1
+      [Requesting program interpreter: /lib/ld-linux.so.2]
+  LOAD           0x000000 0x08048000 0x08048000 0x0abc0 0x0abc0 R E 0x1000
+  LOAD           0x00abc0 0x08053bc0 0x08053bc0 0x002e8 0x005e4 RW  0x1000
+  DYNAMIC        0x00add0 0x08053dd0 0x08053dd0 0x000d8 0x000d8 RW  0x4
+  NOTE           0x000108 0x08048108 0x08048108 0x00020 0x00020 R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.ABI-tag .hash .dynsym .dynstr .gnu.version .gnu.version_r .rel.got .rel.bss .rel.plt .init .plt .text .fini .rodata 
+   03     .data .eh_frame .ctors .dtors .got .dynamic .bss 
+   04     .dynamic 
+   05     .note.ABI-tag 
+
+Entry point is 0x8049590.
+Now run /bin/ls till entry point and see.
+
+[test]$ gdb
+GNU gdb 6.0
+Copyright 2003 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i686-pc-linux-gnu".
+(gdb) file /bin/ls
+Reading symbols from /bin/ls...(no debugging symbols found)...done.
+(gdb) break *0x8049590
+Breakpoint 1 at 0x8049590
+(gdb) run
+Starting program: /bin/ls 
+(no debugging symbols found)...
+Breakpoint 1, 0x08049590 in ?? ()
+(gdb) info proc
+process 27877
+cmdline = '/bin/ls'
+cwd = '/tmp'
+exe = '/bin/ls'
+(gdb) shell cat /proc/27877/maps
+08048000-08053000 r-xp 00000000 68:03 3892367    /bin/ls
+08053000-08054000 rw-p 0000a000 68:03 3892367    /bin/ls
+08054000-08055000 rwxp 00000000 00:00 0
+40000000-40015000 r-xp 00000000 68:03 3189181    /lib/ld-2.2.4.so
+40015000-40016000 rw-p 00014000 68:03 3189181    /lib/ld-2.2.4.so
+40016000-40017000 rw-p 00000000 00:00 0
+4002d000-40030000 r-xp 00000000 68:03 3189255    /lib/libtermcap.so.2.0.8
+40030000-40031000 rw-p 00002000 68:03 3189255    /lib/libtermcap.so.2.0.8
+40031000-4015d000 r-xp 00000000 68:03 3189191    /lib/libc-2.2.4.so
+4015d000-40163000 rw-p 0012b000 68:03 3189191    /lib/libc-2.2.4.so
+40163000-40167000 rw-p 00000000 00:00 0
+bfffe000-c0000000 rwxp fffff000 00:00 0
+(gdb) quit
+The program is running.  Exit anyway? (y or n) y
+
+Let us examine what's mapped into memory:
+
+ 1 08048000-08053000 r-xp 00000000 68:03 3892367    /bin/ls
+ 2 08053000-08054000 rw-p 0000a000 68:03 3892367    /bin/ls
+ 3 08054000-08055000 rwxp 00000000 00:00 0
+ 4 40000000-40015000 r-xp 00000000 68:03 3189181    /lib/ld-2.2.4.so
+ 5 40015000-40016000 rw-p 00014000 68:03 3189181    /lib/ld-2.2.4.so
+ 6 40016000-40017000 rw-p 00000000 00:00 0
+ 7 4002d000-40030000 r-xp 00000000 68:03 3189255    /lib/libtermcap.so.2.0.8
+ 8 40030000-40031000 rw-p 00002000 68:03 3189255    /lib/libtermcap.so.2.0.8
+ 9 40031000-4015d000 r-xp 00000000 68:03 3189191    /lib/libc-2.2.4.so
+10 4015d000-40163000 rw-p 0012b000 68:03 3189191    /lib/libc-2.2.4.so
+11 40163000-40167000 rw-p 00000000 00:00 0
+12 bfffe000-c0000000 rwxp fffff000 00:00 0
+
+Lines 1 and 2  -mappings for two 'LOAD' segment of /bin/ls
+Line 3 - is bss mapping for /bin/ls (bss contains non-initialized variables)
+
+Lines 4 and 5 - mappings for 'LOAD' segments of loader itself
+(ld-linux.so.2 is link to ld-2.2.4.so)
+Line 6 - bss for loader.
+
+Lines 7 and 8 - mappings for 'LOAD' segments of libtermcap library.
+bss for libtermcap don't cross page boundary, so it sit in the 
+mapping 8, and have no own mapping.
+
+Lines 9 and 10 - mappings for 'LOAD' segments of libc library.
+Line 11 - bss for libc.
+
+Reason for existence of mappings 1..11 is pretty obvious.
+But what is mapping 12 good for ?
+Where is it came from ?
+
+This one created by the kernel, when new process exec'ed
+and contains program's argc, argv[] and envp[], arguments and
+environment itself, and auxv vector.
+For auxv description see /usr/include/elf.h
+
+When program invoked stack has following layout:
+argc        <- stack pointer
+argv[0]     
+argv[1]
+...
+argv[argc-1]
+0
+envp[0]
+envp[1]
+...
+envp[n]
+0
+auxv[0]
+auxv[1]
+...
+auxv[n], with auxv[n].a_type = AT_NULL 
+argv0     - NULL-terminated string, pointed by argv[0] 
+argv1     - NULL-terminated string, pointed by argv[1] 
+...
+argv-last - NULL-terminated string, pointed by argv[argc-1]
+env0      - NULL-terminated string, pointed by envp[0]
+env1      - NULL-terminated string, pointed by envp[1]
+...
+envn      - NULL-terminated string, pointed by envp[n]
+argv0     - once more time - filename of the program, NULL-terminated.
+0         - final dword of 0 <- address 0xBFFFFFFF
+
+2. When loader finish relocations ? 
+
+Let's look to the source code of loader (or, simple disassemble it)
+
+[test]$ objdump -d -j.text /lib/ld-linux.so.2
+
+/lib/ld-linux.so.2:     file format elf32-i386
+
+Disassembly of section .text:
+
+00001e00 <_start-0x10>:
+    1e00:	8b 1c 24             	mov    (%esp,1),%ebx
+    1e03:	c3                   	ret    
+    1e04:	8d b6 00 00 00 00    	lea    0x0(%esi),%esi
+    1e0a:	8d bf 00 00 00 00    	lea    0x0(%edi),%edi
+
+00001e10 <_start>:
+    1e10:	54                   	push   %esp
+    1e11:	e8 46 00 00 00       	call   1e5c <_dl_start>
+    1e16:	5b                   	pop    %ebx
+
+00001e17 <_dl_start_user>:
+    1e17:	89 c7                	mov    %eax,%edi
+    1e19:	e8 e2 ff ff ff       	call   1e00 <GLIBC_2.0+0x1e00>
+    1e1e:	81 c3 7a 3a 01 00    	add    $0x13a7a,%ebx
+    1e24:	8b 83 90 00 00 00    	mov    0x90(%ebx),%eax
+    1e2a:	89 20                	mov    %esp,(%eax)
+    1e2c:	8b 83 dc 00 00 00    	mov    0xdc(%ebx),%eax
+    1e32:	8b 00                	mov    (%eax),%eax
+    1e34:	5a                   	pop    %edx
+    1e35:	8d 24 84             	lea    (%esp,%eax,4),%esp
+    1e38:	29 c2                	sub    %eax,%edx
+    1e3a:	52                   	push   %edx
+    1e3b:	8b b3 58 01 00 00    	mov    0x158(%ebx),%esi
+    1e41:	8d 44 94 08          	lea    0x8(%esp,%edx,4),%eax
+    1e45:	8d 4c 24 04          	lea    0x4(%esp,1),%ecx
+    1e49:	50                   	push   %eax
+    1e4a:	8b 06                	mov    (%esi),%eax
+    1e4c:	e8 4b fe ff ff       	call   1c9c <GLIBC_2.0+0x1c9c>
+    1e51:	8b 93 b4 00 00 00    	mov    0xb4(%ebx),%edx
+    1e57:	ff e7                	jmp    *%edi
+    1e59:	8d 76 00             	lea    0x0(%esi),%esi
+
+00001e5c <_dl_start>:
+
+Loader do following:
+   call function _dl_start
+   after that "fall" into function _dl_start_user
+
+Function _dl_start load/relocate executable itself and all
+needed libraries.
+
+Function _dl_start_user invoke libraries' INIT function
+and jump to the executable entry point.
+
+So, the "magic address" is _dl_start_user.

@@ -1,0 +1,23 @@
+
+Submitted by Jack (jask-statifier-sf-net at mudshark dot com)
+ > 
+ > This is worthy of a FAQ item:
+ > 
+ > Q: Why do binaries statified under RHEL 3.0 / RH 9 / linux 
+ > 2.6 with TLS
+ > segfault when run under linux 2.4? 
+ > 
+ > A: Because Linux 2.6 introduces 2 new system calls ( 
+ > get_thread_area, and
+ > set_thread_area ) to provide TLS (thread local storage), when 
+ > you statify an
+ > executable that uses these system calls, it will only run on 
+ > a kernel that
+ > supports them. The solution to this is to statify the 
+ > binaries without the TLS
+ > system calls. Move /lib/tls to /lib/tls.old, and then restatify. 
+A better way:
+for i386:
+ LD_ASSUME_KERNEL=2.2.5 statifier <orig_exe> <new_exe>
+for x86_64:
+ LD_ASSUME_KERNEL=2.4   statifier <orig_exe> <new_exe>

@@ -1,0 +1,88 @@
+# Copyright (C) 2004, 2005 Valery Reznic
+# This file is part of the Elf Statifier project
+# 
+# This project is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License.
+# See LICENSE file in the doc directory.
+
+MKDIR       = mkdir --parents
+MV          = mv --force
+RM          = rm --force
+RMDIR       = rm --force --recursive
+LN          = ln --symbolic --force --no-dereference
+INSTALL_RO  = install --mode=444
+INSTALL_RUN = install --mode=755
+
+define MT_Make_Recursive
+   @set -e &&                                      \
+   for dir in $(SUBDIRS) .; do                     \
+      MY_DIR="$(if $(MY_DIR),$(MY_DIR)/,)" &&      \
+      if [ "$$dir" = "." ]; then                   \
+         target="$(subst -recursive,-local,$@)";   \
+      else                                         \
+         MY_DIR=$$MY_DIR$$dir &&                   \
+         target=$@;                                \
+      fi &&                                        \
+      $(MAKE)                                      \
+         -C $$dir                                  \
+         --no-print-directory                      \
+         $(--silent)                                  \
+         MY_DIR="$$MY_DIR"                         \
+         $$target                                  \
+      ;                                            \
+   done
+endef
+
+define SOURCES_LIST
+   @if [ "x$(SOURCES)" = "x" ]; then                         \
+      LIST=dummy;                                            \
+   else                                                      \
+      LIST="$(SOURCES)";                                     \
+   fi &&                                                     \
+   if [ "x$(SOURCES)" = "x" ]; then                          \
+      :;                                                     \
+   else                                                      \
+      for file in $$LIST; do                                 \
+         echo "$(MY_DIR)$$file";                             \
+      done                                                   \
+   fi
+endef
+
+define EXTRA_DIST_LIST
+   @if [ "x$(EXTRA_DIST)" = "x" ]; then                      \
+      LIST=dummy;                                            \
+   else                                                      \
+      LIST="$(EXTRA_DIST)";                                  \
+   fi &&                                                     \
+   if [ "x$(EXTRA_DIST)" = "x" ]; then                       \
+      :;                                                     \
+   else                                                      \
+      for file in $$LIST; do                                 \
+         echo "$(MY_DIR)$$file";                             \
+      done                                                   \
+   fi
+endef
+
+sources-list-local:
+	$(SOURCES_LIST)
+
+extra-dist-list-local:
+	$(EXTRA_DIST_LIST)
+
+extra-dist-local: $(EXTRA_DIST)
+
+dist-list-local: sources-list-local extra-dist-list-local
+
+all-local: extra-dist-local
+
+.PHONY: sources-list-local extra-dist-list-local extra-dist-local
+MT_RECURSIVE_TARGETS_ALIAS = install clean dist-list extra-dist all
+$(MT_RECURSIVE_TARGETS_ALIAS): %: %-recursive
+
+MT_RECURSIVE_TARGETS = $(addsuffix -recursive,$(MT_RECURSIVE_TARGETS_ALIAS))
+MT_LOCAL_TARGETS     = $(addsuffix -local,$(MT_RECURSIVE_TARGETS_ALIAS))
+
+$(MT_LOCAL_TARGETS):
+
+$(MT_RECURSIVE_TARGETS):
+	$(MT_Make_Recursive)

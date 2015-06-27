@@ -1,0 +1,63 @@
+Memory Layout for statified executable for Alpha
+
+Memory layout for /bin/ls (our example) looks like: 
+
+00011fffe000-000120000000 rwxp 00000000 00:00 0      stack 
+000120000000-000120010000 r-xp 00000000 08:01 606272 /bin/ls
+00012001e000-000120022000 rwxp 0000e000 08:01 606272 /bin/ls
+020000000000-02000001e000 r-xp 00000000 08:01 163877 /lib/ld-2.2.5.so
+02000001e000-020000020000 rw-p 00000000 00:00 0      bss
+02000002c000-02000002e000 rwxp 0001c000 08:01 163877 /lib/ld-2.2.5.so
+02000002e000-020000036000 r-xp 00000000 08:01 164865 /lib/librt-2.2.5.so
+020000036000-02000003e000 ---p 00008000 08:01 164865 /lib/librt-2.2.5.so
+02000003e000-020000046000 rwxp 00010000 08:01 164865 /lib/librt-2.2.5.so
+020000046000-020000054000 rwxp 00000000 00:00 0      bss
+020000054000-0200001c6000 r-xp 00000000 08:01 164614 /lib/libc-2.2.5.so
+0200001c6000-0200001d4000 ---p 00172000 08:01 164614 /lib/libc-2.2.5.so
+0200001d4000-0200001e4000 rwxp 00170000 08:01 164614 /lib/libc-2.2.5.so
+0200001e4000-0200001ea000 rwxp 00000000 00:00 0      bss 
+0200001ea000-0200001fc000 r-xp 00000000 08:01 165455 /lib/libpthread-0.9.so
+0200001fc000-02000020a000 ---p 00012000 08:01 165455 /lib/libpthread-0.9.so
+02000020a000-020000218000 rwxp 00020000 08:01 165455 /lib/libpthread-0.9.so
+
+It's different from memory layout on x86:
+stack segment is IMMEDIATELY under first executable
+segment, so, put starter segment in this place is impossible.
+
+So, where it will go ?
+
+I choose to put it above last library segment.
+
+Original                      Statified
+Executable                    Executable
+Virtual                       Virtual
+Memory                        Memory
+                              +--------------+
+                              | starter      | 
+                              | segment      |
++--------------+              +--------------+
+| libraries'   |              | libraries'   |
+| segments     |              | segments     |
++--------------+              +--------------+
+|              |              |              |
+|              |              |              |
++--------------+              +--------------+
+| executable's |              | executable's |
+| segments     |              | segments     |
++--------------+ 0x0120000000 +--------------+
+| stack        |              | stack        |
+| segment      |              | segment      |
++--------------+              +--------------+
+
+Elf specification say:
+"Loadable segment entries in the program header table
+appear in ascending order, sorted on the p_vaddr member."
+
+So memory layout dictate following file layout:
+
+Offset                               End
+0                                    of file
++--------------+------------+---------+
+| executable's | libraries' | starter |
+| segments     | segments   | segment |
++--------------+------------+---------+

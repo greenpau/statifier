@@ -1,0 +1,18 @@
+Statifier create from dynamically linked ELF executable
+and all it's libraries (and all LD_PRELOAD libraries if any)
+one file. This file can be copied and run on another machine
+without need to drag all it's libraries.
+
+Statifier use following software:
++----------+-----------------------+---------------------+
+| Program  |  PackageName for RH72 | PackageName for RH9 |
++----------+-----------------------+---------------------+
+| awk      |  gawk                 | gawk                |
+| bash     |  bash                 | bash                |
+| cat      |  textutils            | coreutils           |
+| chmod    |  fileutils            | coreutils           |
+| dirname  |  sh-utils             | coreutils           |
+| mkdir    |  fileutils            | coreutils           |
+| rm       |  fileutils            | coreutils           |
+| uname    |  sh-utils             | coreutils           |
++----------+-----------------------+---------------------+

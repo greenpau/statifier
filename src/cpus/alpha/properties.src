@@ -1,0 +1,14 @@
+# to be sourced from sh
+
+# Copyright (C) 2004, 2005 Valery Reznic
+# This file is part of the Elf Statifier project
+# 
+# This project is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License.
+# See LICENSE file in the doc directory.
+
+# properties for alpha
+
+# pattern for _dl_start_user:
+# mov v0,s0
+prop_pattern_dl_start_user="0x09 0x04 0xe0 0x47"

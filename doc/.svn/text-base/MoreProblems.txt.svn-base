@@ -1,0 +1,77 @@
+Changes for statifier's idea.
+
+Life is not as easy, as I think at beginning of the project.
+
+1. Not all segment's should go to the statified exe - stack segment
+    should be left out - it'll be recreated by kernel on exec.
+
+    Note.
+    Linux kernels version >= 2.5 create not just stack segment but one more -
+    on address 0xfffd000-0xfffe000.
+    This one also created by kernel, and it's dynamic shared object (DSO) 
+    with soname 'linux-gate.so.1", so it can be easily detected.
+    
+
+2. _dl_start_user got some values in registers.
+   Registers' values were set somewhere in _dl_start.
+   So, I can not  just set _dl_start_user's address as entry point -
+   I have adjust registers values before.
+
+   Now, the question is: which registers should be restored ?
+   I want to be as independent from loader's implementation as possible,
+   so answer is "All". OK, "all" - is "all integer registers".
+   I can't imagine loader dealing with floating-point.
+
+   But what is "all integer registers" ?
+   The answer is processor-dependent.
+   for x386 there are: 
+      eax, ebx, ecx, edx, ebp, esi, edi - general registers
+      eflags                            - register with processor's flags
+      eip                               - instruction pointer (program counter)
+      esp                               - stack pointer.
+      cs                                - code segment
+      ss                                - stack segment
+      ds, es, fs, gs                    - segment registers
+
+When program invoked cs/eip  are 'point' to the 
+program's entry point, so I hope they are correct. 
+
+Like this, ss/esp point to the stack, so they should be 
+correct too.
+
+All others should be restored to their values on the "snapshot time".
+
+   Note. Kernel >= 2.4 can be configured to use TLS (thread local storage).
+   At least on i386 TLS implemented by restricting %gs changes.
+   So, TLS-aware loader, before setting %gs to desired value
+   invoke 'set_thread_area' system call. Unfortunately, it happened
+   not in the _dl_start_user, which I'll call in any case, but in _dl_start
+   which I like to bypass.
+
+3. loader, during _dl_start, save some information in it's variables.
+   This information may or may not be used after that,
+   but I want to be on the safe side, and set these variables
+   to the correct values.
+   The variables are:
+   _dl_argc        - number of arguments
+   _dl_argv        - address of arguments
+   _environ        - address of environment
+   _dl_auxv        - aux data
+   _dl_platform    - platform name (optional)
+   _dl_platformlen - length of platform name (optional) 
+   
+_dl_argc is a number of arguments and it's obviously can changed from one
+   invocation to another.
+All other are pointers to the kernel created segment, and depend on
+command line arguments and environment, so they are variable too.
+
+_dl_platform and _dl_platformlen. There are loaders, which have
+these variables (example ld-2.2.4, RH72) and there are loaders without it
+(ld-2.3.2, RH9).
+
+So, before jump to the _dl_start_user I need:
+- set loader's variable to the correct values.
+- if loader/kernel use TLS invoke 'set_thread_area' with correct arguments.
+- restore "almost all" registers to the values and jump to _dl_start_user.
+
+Let's call it "starter"

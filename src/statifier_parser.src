@@ -1,0 +1,240 @@
+# to be sourced from bash
+
+# Copyright (C) 2004, 2005 Valery Reznic
+# This file is part of the Elf Statifier project
+# 
+# This project is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License.
+# See LICENSE file in the doc directory.
+
+function Usage
+{
+	cat <<EOF || return
+Usage: $0 [option]... <orig_exe> <new_exe>
+Options:
+   -h, --help                   display this help and exit
+   -k, --keep-work-dir          do not remove working directory.
+                                working dir will be .statifier instead of
+                                \$TMPDIR/statifier.tmpdir.\$\$
+   -s, --set=Variable=Value     set environment variable 'Variable' to Value
+   -u, --unset=Variable         unset environment variable 'Variable'
+   -v, --verbose                verbose output
+   -V, --version                output version and exit
+EOF
+	return 0
+}
+
+function Try_Help
+{
+	Echo "Try \`$0 --help' for more information."
+}
+
+###############################################################################
+function UnrecognizedOption
+{
+	Echo "$0: unrecognized option \`--$LONG_OPTION'"
+	Try_Help
+}
+
+function AmbiguousOption
+{
+	Echo "$0: option \`--$LONG_OPTION' is ambiguous"
+	Try_Help
+}
+###############################################################################
+function RequeredArgument
+{
+	[ "x$SHORT_OPTION" = "x-" ] || return 0  # we use short option,
+                                                 # do nothing
+	if [ "$OPTARG_EXIST" ]; then
+		[ "$OPTIND_INCR" ] && OPTIND=$[OPTIND + 1]
+	else
+		Echo "$0: option \`$LONG_OPTION' requires an argument"
+		Try_Help
+		return 1
+	fi
+	return 0
+}
+###############################################################################
+function CommandLineParsing
+{
+	# Default flags' values. To be sure they don't came from environment
+	NEED_EXIT=""
+	opt_loader_num_var=0
+	opt_keep_working_directory=""
+	opt_verbose=""
+
+	while getopts "hks:u:vV-:" opt; do
+		OPTIND_INCR=""
+		case "$opt" in
+			h) LONG_OPTION=help;;
+			k) LONG_OPTION=keep-working-directory;;
+			s) LONG_OPTION=set;;
+			u) LONG_OPTION=unset;;
+			v) LONG_OPTION=verbose;;
+			V) LONG_OPTION=version;;
+	
+                	-)
+				case "x$OPTARG" in
+					x*=*)
+						LONG_OPTION=${OPTARG%%=*}
+						OPTARG=${OPTARG#*=}
+						OPTARG_EXIST=1
+					;;
+
+					*)
+                   				LONG_OPTION="$OPTARG"
+                   				if [ $OPTIND -le $# ]; then
+                      					eval OPTARG=\$$OPTIND
+                      					OPTARG_EXIST=1
+							OPTIND_INCR=1
+                   				else
+                      					OPTARG=""
+                      					OPTARG_EXIST=""
+                   				fi
+					;;
+				esac
+                	;;
+
+			*)
+				Try_Help
+				return 1
+			;;
+		esac
+
+		SHORT_OPTION="$opt"
+		case "$LONG_OPTION" in
+			h | \
+			he | \
+			hel | \
+			help)
+				Usage
+				NEED_EXIT=0
+				return 0
+			;;
+
+			k | \
+			ke | \
+			kee | \
+			keep | \
+			keep- | \
+			keep-w | \
+			keep-wo | \
+			keep-wor | \
+			keep-work | \
+			keep-worki | \
+			keep-workin | \
+			keep-working | \
+			keep-working- | \
+			keep-working-d | \
+			keep-working-di | \
+			keep-working-dir | \
+			keep-working-dire | \
+			keep-working-direc | \
+			keep-working-direct | \
+			keep-working-directo | \
+			keep-working-director | \
+			keep-working-directory) 
+				opt_keep_working_directory="yes"
+			;;
+
+			s | \
+			se | \
+			set)
+				RequeredArgument || return
+				opt_loader_num_var=$[opt_loader_num_var + 1]
+				eval opt_loader_var_$opt_loader_num_var="'set environment $OPTARG'" || return
+			;;
+
+			u | \
+			un | \
+			uns | \
+			unse | \
+			unset)
+				RequeredArgument || return
+				opt_loader_num_var=$[opt_loader_num_var + 1]
+				eval opt_loader_var_$opt_loader_num_var="'unset environment $OPTARG'" || return
+			;;
+
+			v | \
+			ve | \
+			ver)
+				AmbiguousOption
+				return 1
+			;;
+
+			verb | \
+			verbo | \
+			verbos | \
+			verbose)
+				opt_verbose="yes"
+			;;
+
+			vers | \
+			versi | \
+			versio | \
+			version)
+				set -e
+					source $D/VERSION || return
+				set +e
+				echo "$VERSION"
+				NEED_EXIT=0
+				return 0
+			;;
+
+			*)
+				UnrecognizedOption
+				return 1
+			;;
+		esac
+	done || return
+	# I need shift by (OPTIND - 1) 
+	# Instead of I add first dummy argument and shift by OPTIND
+	set dummy "$@" 
+	shift $OPTIND || return
+
+	# Now options parsing is done.  Verify arguments.
+
+	[ $# -lt 2 -o "x$1" = "x" -o "x$2" = "x" ] && {
+		Echo "$0: too few arguments"
+		Try_Help
+		return 1
+	}
+	[ $# -gt 2 ] && {
+		Echo "$0: too much arguments"
+		Try_Help
+		return 1
+	}
+
+	opt_orig_exe="$1"
+	opt_new_exe="$2"
+
+	# Gdb try to find exe in $PATH.
+	# In order to avoid it I'll prepend ./ in case Executable
+	# have no absolute path
+	case "x$opt_orig_exe" in
+		x/*) ;; # Do nothing, absolute path
+		*) opt_orig_exe="./$opt_orig_exe"
+	esac
+
+	return 0
+}
+
+function SaveOptions
+{
+	echo "opt_orig_exe='$opt_orig_exe'" || return
+	echo "opt_new_exe='$opt_new_exe'"   || return
+
+	local current=0;
+	local var
+	while [ $current -lt $opt_loader_num_var ]; do
+		current=$[current + 1]
+		eval var="\$opt_loader_var_$current"  || return
+		echo "opt_loader_var_$current='$var'" || return
+	done || return
+	echo "opt_loader_num_var='$opt_loader_num_var'" || return
+	echo "opt_keep_working_directory='$opt_keep_working_directory'" || return
+	echo "opt_verbose='$opt_verbose'" || return
+	return 0
+}
+

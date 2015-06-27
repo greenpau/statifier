@@ -1,0 +1,77 @@
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb
+END
+breakpoints.c
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/breakpoints.c
+END
+my_gdb.c
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/my_gdb.c
+END
+my_ptrace.c
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/my_ptrace.c
+END
+environment.c
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/environment.c
+END
+dump.c
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/dump.c
+END
+breakpoints.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/breakpoints.h
+END
+my_gdb.h
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/my_gdb.h
+END
+registers.c
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/registers.c
+END
+my_ptrace.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/my_ptrace.h
+END
+environment.h
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/environment.h
+END
+dump.h
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/dump.h
+END
+registers.h
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/my_gdb/registers.h
+END

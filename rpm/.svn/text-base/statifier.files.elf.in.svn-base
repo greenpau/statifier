@@ -1,0 +1,26 @@
+#
+# List of per-elf files. It include only original files,
+# not links to the common ones
+#
+%dir /usr/lib/statifier/@ELF_CLASS@
+     /usr/lib/statifier/@ELF_CLASS@/dl-var
+     /usr/lib/statifier/@ELF_CLASS@/elf_data
+     /usr/lib/statifier/@ELF_CLASS@/elf_find_pattern
+     /usr/lib/statifier/@ELF_CLASS@/elf_soname
+     /usr/lib/statifier/@ELF_CLASS@/elf_symbols
+     /usr/lib/statifier/@ELF_CLASS@/fep
+     /usr/lib/statifier/@ELF_CLASS@/find_dl_argc
+     /usr/lib/statifier/@ELF_CLASS@/find_dl_argv
+     /usr/lib/statifier/@ELF_CLASS@/find_dl_auxv
+     /usr/lib/statifier/@ELF_CLASS@/find_dl_platform
+     /usr/lib/statifier/@ELF_CLASS@/find_environ
+     /usr/lib/statifier/@ELF_CLASS@/inject_starter
+     /usr/lib/statifier/@ELF_CLASS@/my_gdb
+     /usr/lib/statifier/@ELF_CLASS@/non_pt_load
+     /usr/lib/statifier/@ELF_CLASS@/pt_load_1
+     /usr/lib/statifier/@ELF_CLASS@/regs
+     /usr/lib/statifier/@ELF_CLASS@/set_thread_area
+     /usr/lib/statifier/@ELF_CLASS@/strtoul
+     /usr/lib/statifier/@ELF_CLASS@/unsigned_long_sum
+     /usr/lib/statifier/@ELF_CLASS@/properties.src
+     /usr/lib/statifier/@ELF_CLASS@/regs.awk

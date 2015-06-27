@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha
+END
+regs.S
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/regs.S
+END
+properties.src
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/properties.src
+END
+processor.h
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/processor.h
+END
+set_thread_area.gdb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/set_thread_area.gdb
+END
+syscall.gdb
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/syscall.gdb
+END
+thread_local_storage_syscall.h
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/thread_local_storage_syscall.h
+END
+dl-var.S
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/dl-var.S
+END
+regs.list
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/regs.list
+END
+set_thread_area.S
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/set_thread_area.S
+END
+clear_trace_bit.gdb
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/alpha/clear_trace_bit.gdb
+END

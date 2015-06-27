@@ -1,0 +1,57 @@
+Memory Layout for statified executable for x86 (x86_64)
+
+As we already saw in 'MoreDetails.txt' memory layout 
+for /bin/ls (our example) looks like: 
+
+ 1 08048000-08053000 r-xp 00000000 68:03 3892367    /bin/ls
+ 2 08053000-08054000 rw-p 0000a000 68:03 3892367    /bin/ls
+ 3 08054000-08055000 rwxp 00000000 00:00 0          bss
+ 4 40000000-40015000 r-xp 00000000 68:03 3189181    /lib/ld-2.2.4.so
+ 5 40015000-40016000 rw-p 00014000 68:03 3189181    /lib/ld-2.2.4.so
+ 6 40016000-40017000 rw-p 00000000 00:00 0          bss
+ 7 4002d000-40030000 r-xp 00000000 68:03 3189255    /lib/libtermcap.so.2.0.8
+ 8 40030000-40031000 rw-p 00002000 68:03 3189255    /lib/libtermcap.so.2.0.8
+ 9 40031000-4015d000 r-xp 00000000 68:03 3189191    /lib/libc-2.2.4.so
+10 4015d000-40163000 rw-p 0012b000 68:03 3189191    /lib/libc-2.2.4.so
+11 40163000-40167000 rw-p 00000000 00:00 0          bss
+12 bfffe000-c0000000 rwxp fffff000 00:00 0          stack 
+
+Were one can put starter code ?
+I choose to put it under first executable:
+
+Original                    Statified
+Executable                  Executable
+Virtual                     Virtual
+Memory                      Memory
++--------------+ 0xc0000000 +--------------+
+| stack        |            | stack        |
+| segment      |            | segment      |
++--------------+            +--------------+
+|              |            |              |
+|              |            |              |
++--------------+            +--------------+
+| libraries'   |            | libraries'   |
+| segments     |            | segments     |
++--------------+            +--------------+
+|              |            |              |
+|              |            |              |
++--------------+            +--------------+
+| executable's |            | executable's |
+| segments     |            | segments     |
++--------------+ 0x08048000 +--------------+
+                            | starter      | 
+                            | segment      |
+                            +--------------+
+
+Elf specification say:
+"Loadable segment entries in the program header table
+appear in ascending order, sorted on the p_vaddr member."
+
+So memory layout dictate following file layout:
+
+Offset                               End
+0                                    of file
++---------+--------------+------------+
+| starter | executable's | libraries' |
+| segment | segments     | segments   |
++---------+--------------+------------+

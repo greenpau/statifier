@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386
+END
+dump_tls_data.c
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/dump_tls_data.c
+END
+regs.S
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/regs.S
+END
+properties.src
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/properties.src
+END
+processor.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/processor.h
+END
+thread_local_storage_syscall.h
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/thread_local_storage_syscall.h
+END
+dl-var.S
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/dl-var.S
+END
+regs.list
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/regs.list
+END
+set_thread_area.S
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/p/statifier/code/!svn/ver/608/statifier/tags/V1_7_3/src/cpus/i386/set_thread_area.S
+END

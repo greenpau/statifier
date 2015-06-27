@@ -1,0 +1,18 @@
+#
+# Common files for both elf32 and elf64.
+# Each of these files present in /usr/lib/statifier
+# and link to it (with same name) in both 32 and 64 directories
+#
+
+     /usr/lib/statifier/@ELF_CLASS@/statifier_lib.src
+     /usr/lib/statifier/@ELF_CLASS@/statifier_parser.src
+     /usr/lib/statifier/@ELF_CLASS@/statifier_common.sh
+     /usr/lib/statifier/@ELF_CLASS@/statifier_loader.sh
+     /usr/lib/statifier/@ELF_CLASS@/statifier_dump.sh
+     /usr/lib/statifier/@ELF_CLASS@/statifier_create_starter.sh
+     /usr/lib/statifier/@ELF_CLASS@/statifier_create_exe.sh
+     /usr/lib/statifier/@ELF_CLASS@/statifier.sh
+     /usr/lib/statifier/@ELF_CLASS@/fep.sh
+     /usr/lib/statifier/@ELF_CLASS@/maps.sh
+     /usr/lib/statifier/@ELF_CLASS@/regs.sh
+     /usr/lib/statifier/@ELF_CLASS@/set_thread_area.sh

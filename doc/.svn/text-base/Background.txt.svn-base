@@ -1,0 +1,185 @@
+SOME BACKGROUND INFORMATION
+
+1. Introduction.
+
+Statifier convert dynamically linked executable
+to "pseudo-static".
+
+Statifier code is relative simpler.
+But in order to understand it
+we first need to know following:
+
+1) ELF file format.
+2) How statically  linked executables are loaded.
+3) How dynamically linked executables are loaded.
+
+Let's go.
+
+2. ELF file format.
+ELF file format description can be found (for example) at 
+http://www.x86.org/ftp/manuals/tools/elf.pdf
+
+3. How statically linked executables are loaded ?
+
+Let's take us /sbin/ldconfig as example 
+(sure enough it will present on the system and statically linked.)
+
+Just in case:
+
+[test]$ file /sbin/ldconfig
+/sbin/ldconfig: ELF 32-bit LSB executable, Intel 80386, version 1,
+                statically linked, stripped
+
+OK, this file is really here and it is really statically linked. 
+
+	[test]$ readelf -l /sbin/ldconfig
+
+Elf file type is EXEC (Executable file)
+Entry point 0x80480e0
+There are 3 program headers, starting at offset 52
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x000000 0x08048000 0x08048000 0x6a3f8 0x6a3f8 R E 0x1000
+  LOAD           0x06a400 0x080b3400 0x080b3400 0x020c4 0x030ac RW  0x1000
+  NOTE           0x000094 0x08048094 0x08048094 0x00020 0x00020 R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .init .text .fini .rodata __libc_subfreeres __libc_atexit
+           __libc_subinit .note.ABI-tag 
+   01     .data .eh_frame .ctors .dtors .got .bss 
+   02     .note.ABI-tag 
+
+What we can see here ?
+There are a number of program headers, 
+each of them describe one program segment.
+
+Type     - Segment type.
+Offset   - Offset from beginning of the file to the segment start.
+VirtAddr - VirtAddress at which segment loaded.
+FileSize - Size of segment in the file
+MemSize  - Size of segment in the memory
+Flg      - Permissions
+
+When statically linked executable exec'ed kernel do following:
+- Load each segment of type 'LOAD' to the specified VirtAddress,
+  and set memory protection as specified by Flg.
+- jump to the "Entry Point"
+  (in this /sbin/ldconfig case Entry point is 0x80480e0)
+
+That's all. Pretty easy, eh ?
+
+4. How dynamically linked executables are loaded ?
+
+Let us take /bin/ls as example.
+
+[test]$ readelf -l /bin/ls
+
+Elf file type is EXEC (Executable file)
+Entry point 0x8049590
+There are 6 program headers, starting at offset 52
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  PHDR           0x000034 0x08048034 0x08048034 0x000c0 0x000c0 R E 0x4
+  INTERP         0x0000f4 0x080480f4 0x080480f4 0x00013 0x00013 R   0x1
+      [Requesting program interpreter: /lib/ld-linux.so.2]
+  LOAD           0x000000 0x08048000 0x08048000 0x0abc0 0x0abc0 R E 0x1000
+  LOAD           0x00abc0 0x08053bc0 0x08053bc0 0x002e8 0x005e4 RW  0x1000
+  DYNAMIC        0x00add0 0x08053dd0 0x08053dd0 0x000d8 0x000d8 RW  0x4
+  NOTE           0x000108 0x08048108 0x08048108 0x00020 0x00020 R   0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     
+   01     .interp 
+   02     .interp .note.ABI-tag .hash .dynsym .dynstr .gnu.version 
+          .gnu.version_r .rel.got .rel.bss .rel.plt .init .plt .text .fini 
+          .rodata 
+   03     .data .eh_frame .ctors .dtors .got .dynamic .bss 
+   04     .dynamic 
+   05     .note.ABI-tag 
+
+Something new. There is INTERP segment here.
+When kernel see interpreter, it load all LOAD segments from executable itself,
+then all load segments from specified program interpreter 
+(in this example /lib/ld-linux.so.2) and jump to interpreter's entry point.
+
+Now action has been moved from kernel-space to user-space and it's
+completely up to interpreter(loader) to prepare and run dynamically linked
+executable.
+
+5. What loader do with dynamically linked executable.
+
+OK, all executable's and  loader's load segments are loaded by the kernel
+and loader got control.
+
+Now it load all libraries (if any), specified by LD_PRELOAD
+environment variable.
+After that, it look at 'DYNAMIC' segment of executable and load
+all needed libraries:
+	[test]$ readelf -d /bin/ls
+
+Dynamic segment at offset 0xadd0 contains 21 entries:
+  Tag        Type                         Name/Value
+ 0x00000001 (NEEDED)                     Shared library: [libtermcap.so.2]
+ 0x00000001 (NEEDED)                     Shared library: [libc.so.6]
+ 0x0000000c (INIT)                       0x80490bc
+ 0x0000000d (FINI)                       0x804fd10
+ 0x00000004 (HASH)                       0x8048128
+ 0x00000005 (STRTAB)                     0x8048958
+ 0x00000006 (SYMTAB)                     0x80483a8
+ 0x0000000a (STRSZ)                      911 (bytes)
+ 0x0000000b (SYMENT)                     16 (bytes)
+ 0x00000015 (DEBUG)                      0x0
+ 0x00000003 (PLTGOT)                     0x8053c94
+ 0x00000002 (PLTRELSZ)                   592 (bytes)
+ 0x00000014 (PLTREL)                     REL
+ 0x00000017 (JMPREL)                     0x8048e6c
+ 0x00000011 (REL)                        0x8048e34
+ 0x00000012 (RELSZ)                      56 (bytes)
+ 0x00000013 (RELENT)                     8 (bytes)
+ 0x6ffffffe (VERNEED)                    0x8048dd4
+ 0x6fffffff (VERNEEDNUM)                 1
+ 0x6ffffff0 (VERSYM)                     0x8048d1e
+ 0x00000000 (NULL)                       0x0
+
+In our examples libtermcap.so.2 and libc.so.6 will be loaded.
+
+After that loader make relocation for all loaded libraries.
+(If environment variable LD_BIND_NOW was set it include also
+resolving for all global symbols).
+
+When relocation is done, loader 
+invoke all libraries' INIT functions and after that
+jump to executable's entry point.
+
+6. Statifier's idea.
+
+All above is very interesting, but how it related to statifier ?
+
+Statifier (like it's author) try to be as lazy as possible.
+So, it leave all the work to the loader.
+Statifier take "memory snapshot" of the process, created by loader
+when loader ALREADY finish relocation and BEFORE loader invoke any
+INIT function.
+
+What now ? Now this "memory snapshot" should be somehow loaded
+and run from the point were loader was stopped.
+
+Who will be so kind to do it for us ?
+Kernel !
+
+Let's save "memory snapshot", i.e. all segments from executable and
+libraries loaded by loader as ELF file with program's header of type
+'LOAD' for each segment, and entry point set to the address,
+where execution was stopped to take sharpshoot.
+
+In this case, kernel will think, it's a statically linked executable.
+(Because there is no 'INTERP' segment)
+As we already know kernel load statically linked executable as following:
+- load all 'LOAD' segment
+- jump to the executable's entry point.
+
+That's it !
