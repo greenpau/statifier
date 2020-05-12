@@ -5,9 +5,9 @@
 # modify it under the terms of the GNU General Public License.
 # See LICENSE file in the doc directory.
 
-MKDIR       = mkdir --parents
+MKDIR       = mkdir -p
 MV          = mv --force
-RM          = rm --force
+RM          = rm -f
 RMDIR       = rm --force --recursive
 LN          = ln --symbolic --force --no-dereference
 INSTALL_RO  = install --mode=444

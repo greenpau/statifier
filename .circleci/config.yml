@@ -1,0 +1,50 @@
+version: 2.1
+
+
+jobs:
+  build-alpine:
+    docker:
+      - image: mhart/alpine-node:10.20.1
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+#      - attach_workspace:
+#          # Must be absolute path or relative path from working_directory
+#          at: .
+#
+#      # Download and cache dependencies
+#      - restore_cache:
+#          keys:
+#            - v1-dependencies-alpine-{{ checksum "package.json" }}
+#            # fallback to using the latest cache if no exact match is found
+#            - v1-dependencies-alpine-
+
+      - run: make all
+
+#      - save_cache:
+#          paths:
+#            - node_modules
+#          key: v1-dependencies-alpine-{{ checksum "package.json" }}
+#
+#      # run tests!
+#      - run: npm run build-alpine
+
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+#      - persist_to_workspace:
+#          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+#          # taken to be the root directory of the workspace.
+#          root: .
+#          # Must be relative path from root
+#          paths:
+#            - out
+#            - coverage
+#            - package.json
+
+workflows:
+  version: 2
+
+  "Build and Test":
+    jobs:
+      - build-alpine
