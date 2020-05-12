@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-alpine:
     docker:
-      - image: mhart/alpine-node:10.20.1
+      - image: gitlab/gitlab-runner:alpine
 
     working_directory: ~/repo
 
@@ -20,7 +20,6 @@ jobs:
 #            # fallback to using the latest cache if no exact match is found
 #            - v1-dependencies-alpine-
 
-      - run: apk add make
       - run: make all
 
 #      - save_cache:
